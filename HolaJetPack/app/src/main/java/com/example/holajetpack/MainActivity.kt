@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntOffset
 
 
@@ -129,31 +130,73 @@ fun ImagenConTexto() {
     @Composable
     fun ImagenColor(){
         var BackgroundColor by remember { mutableStateOf(Color.White) }
-        var textPosition by remember { mutableStateOf(Offset(0f,0f)) }
 
-        Box(modifier = Modifier.fillMaxSize().padding(40.dp).background(BackgroundColor)) {
+        var textPosition by remember { mutableStateOf(Offset(0f,0f)) }
+        var imagePosition by remember { mutableStateOf(Offset(0f,0f)) }
+        var botonPosition by remember { mutableStateOf(Offset(0f,0f)) }
+
+        var anchoPantalla by remember { mutableStateOf(0f) }
+        var altoPantalla by remember { mutableStateOf(0f) }
+        var anchoTexto by remember { mutableStateOf(0f) }
+        var altoTexto by remember { mutableStateOf(0f) }
+
+
+        Box(modifier = Modifier.fillMaxSize().padding(40.dp).background(BackgroundColor)
+            .onGloballyPositioned{coordenadas ->//SABER el tamaño del dispositivo sin tener que poner un ancho determinado, el size sh
+                anchoPantalla = coordenadas.size.width.toFloat()
+                altoPantalla = coordenadas.size.height.toFloat()
+
+            }
+        ) {
+
             Image(
                 painter = painterResource(id = R.drawable.sr),
                 contentDescription = "Silver y Russel",
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier.offset{
+                    IntOffset(imagePosition.x.toInt(), imagePosition.y.toInt())
+                }.pointerInput(Unit ){
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()//Para arrastrar el texto
+                        imagePosition += Offset(dragAmount.x, dragAmount.y)
+                    }
+                }
             )
 
             Text(text="SILVER",
                 fontSize = 50.sp,
                 color = Color.Green,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Center))
+                modifier = Modifier.offset{
+                                    IntOffset(textPosition.x.toInt(), textPosition.y.toInt()) }
+
+                                    .pointerInput(Unit ) {
+                                        detectDragGestures { change, dragAmount ->
+                                            change.consume()//Para arrastrar el texto
+                                            textPosition += Offset(dragAmount.x, dragAmount.y)
+                                        }
+                                    }
+
+                                    .onGloballyPositioned{coordenadas ->
+                                        anchoTexto = coordenadas.size.width.toFloat()
+                                        altoTexto = coordenadas.size.height.toFloat()
+                                        if (textPosition == Offset(0f,0f)) {
+                                            textPosition = Offset((anchoPantalla-anchoTexto)/2, (altoPantalla-altoTexto)/2)
+                                        }
+                                    }
+            )
 
             Button(
                 onClick = {BackgroundColor = randomColor()},
                 modifier = Modifier.offset{
-                    IntOffset(textPosition.x.toInt(), textPosition.y.toInt())
+                    IntOffset(botonPosition.x.toInt(), botonPosition.y.toInt())
                 }.pointerInput(Unit ){
-                    detectDragGestures {  }
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()//Para arrastrar el texto
+                        botonPosition += Offset(dragAmount.x, dragAmount.y)
+                    }
                 }
-            ) {
-                Text("Cambiar Fondo")
-            }
+                ) {
+                    Text("Cambiar Fondo")
+                }
         }
     }
 
