@@ -1,6 +1,6 @@
 package com.example.codekotlin
 
-class Persona (nombre:String, primerApellido:String, edad:Int){
+class Persona (nombre:String, primerApellido:String, edad:Int:Int=18){
     var nombre = nombre
     var primerApellido = primerApellido
     var edad = edad
