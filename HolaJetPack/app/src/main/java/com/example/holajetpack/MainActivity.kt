@@ -37,6 +37,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.ui.graphics.graphicsLayer
 
 
 class MainActivity : ComponentActivity() {
@@ -48,7 +50,8 @@ class MainActivity : ComponentActivity() {
             //EjercicioRowCol()
             //EjemploBox()
             //ImagenConTexto()
-            ImagenColor()
+            //ImagenColor()
+            ImagenConZoom()
         }
     }
 }
@@ -201,6 +204,36 @@ fun ImagenConTexto() {
     }
 
 
+//EJERCICIO 6
+@Composable
+fun ImagenConZoom(){
+    var escalaImagen by remember{mutableStateOf(1f)}
+    var posicionImagen by remember{mutableStateOf(Offset(0f,0f))}
+
+    Box(
+        modifier = Modifier
+                   .fillMaxSize()
+                   .pointerInput(Unit){
+                       detectTransformGestures{_, desplazamiento, zoom, _ ->
+                           escalaImagen = escalaImagen * zoom
+                           posicionImagen = posicionImagen + desplazamiento
+                       }
+                   }
+                    , contentAlignment = Alignment.Center
+    ){
+        Image(
+            painter = painterResource(id=R.drawable.sr),
+            contentDescription ="Silver Russel Cumpleaños",
+            modifier = Modifier.graphicsLayer(
+                scaleX = escalaImagen.coerceIn(0.5f,3f),//En mi eje x se va a poder hacer grande hasta el triple de tamaño
+                scaleY = escalaImagen.coerceIn(0.5f,3f),//Ahora en mi ejeY. se puede hacer grande a lo alto y a lo ancho
+                translationX = posicionImagen.x,
+                translationY = posicionImagen.y,
+            )
+        )
+
+    }
+}
 
 //EJERCICIO 1
 @Preview
