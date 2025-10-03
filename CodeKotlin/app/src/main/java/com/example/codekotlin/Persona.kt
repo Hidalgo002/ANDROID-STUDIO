@@ -8,6 +8,6 @@ class Persona (nombre:String, primerApellido:String, edad:Int){
     fun main(){
         val persona1 = Persona("michel", "Fassbender",56)
         print(persona1)
-        print(persona1.edad>50)
+        print(persona1.edad)
     }
 }
