@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Button
 import androidx.compose.runtime.mutableStateOf
@@ -209,17 +210,27 @@ fun ImagenConTexto() {
 fun ImagenConZoom(){
     var escalaImagen by remember{mutableStateOf(1f)}
     var posicionImagen by remember{mutableStateOf(Offset(0f,0f))}
+    var anguloRotacion by remember{mutableStateOf(0f)}
 
     Box(
         modifier = Modifier
                    .fillMaxSize()
-                   .pointerInput(Unit){
-                       detectTransformGestures{_, desplazamiento, zoom, _ ->
+                   .pointerInput(Unit) {//Función para hacer zoom a las imagenes y rotarlas
+                       detectTransformGestures { _, desplazamiento, zoom, rotacion ->
                            escalaImagen = escalaImagen * zoom
                            posicionImagen = posicionImagen + desplazamiento
+                           anguloRotacion = anguloRotacion + rotacion
                        }
                    }
-                    , contentAlignment = Alignment.Center
+                   .pointerInput(Unit){//Función en la que si damos doble  click, la imagen vuelve a us estado original
+                       detectTapGestures(onDoubleTap = {
+                           //Devolvemos la imagen a su estado inicial
+                           escalaImagen = 1f
+                           posicionImagen = Offset(0f,0f)
+                           anguloRotacion = 0f
+                       })
+                   }
+                   , contentAlignment = Alignment.Center
     ){
         Image(
             painter = painterResource(id=R.drawable.sr),
@@ -229,6 +240,7 @@ fun ImagenConZoom(){
                 scaleY = escalaImagen.coerceIn(0.5f,3f),//Ahora en mi ejeY. se puede hacer grande a lo alto y a lo ancho
                 translationX = posicionImagen.x,
                 translationY = posicionImagen.y,
+                rotationZ = anguloRotacion
             )
         )
 
