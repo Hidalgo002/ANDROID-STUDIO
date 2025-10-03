@@ -1,0 +1,6 @@
+class Persona {
+    fun main(){
+        val persona1 = Persona
+        print(persona1)
+    }
+}
