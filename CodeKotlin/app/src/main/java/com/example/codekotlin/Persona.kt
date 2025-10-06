@@ -1,5 +1,5 @@
 package com.example.codekotlin
-
+/*
 class Persona (nombre:String, primerApellido:String, edad:Int:Int=18){
     var nombre = nombre
     var primerApellido = primerApellido
@@ -10,4 +10,4 @@ class Persona (nombre:String, primerApellido:String, edad:Int:Int=18){
         print(persona1)
         print(persona1.edad)
     }
-}
+}*/
